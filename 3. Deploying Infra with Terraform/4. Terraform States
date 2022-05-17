@@ -1,0 +1,39 @@
+1. Terraform States:
+=====================
+State File:
+===========
+- After the deployment is finished terraform creates a state file to keep track of current 
+  state of the infrastructure.
+
+- It will use this file to compare when you deploy/destroy resources in other words it compares
+  current state with desired state using this file.
+
+- A File with a name of "terraform.tfstate" will be created in your working directory.
+
+Example: if ur infra is diff from "terraform configs" its a current state now terraform will tries to get ur infra into "terraform config"  
+         its knows as desired state.
+
+1.Desired State:
+-------------------
+- Terraforms Primary function is to create, modify, and destroy infrastructure resources to match the desired state described in a Terraform 
+  Configuration.
+
+2. Current State:
+------------------
+- current state is the actual state of resource that is currently deployed. 
+
+Important:     Current State ----------------->> Get Back Desired State.
+---------- 
+- Terraform tries to ensure that the deployed infrastructure is based on the desired state.
+- If there is a difference between the two terraform plan presents a description of the changes necessary to acheive the desired state.
+
+3. What is Terraform refresh?
+------------------------------
+-The terraform refresh command reads the current settings from all managed remote objects and updates the Terraform state to match. 
+ Warning: This command is deprecated, because its default behavior is unsafe if you have misconfigured credentials for any of your providers.
+
+# terraform refresh
+
+
+4.Challenges with Current State:
+----------------------------------
