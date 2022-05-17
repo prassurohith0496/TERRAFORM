@@ -1,5 +1,5 @@
-1.Attributes:
-==============
+1.Attributes & Output Values:
+==============================
 - Terraform has capability to o/p the attribute of a resource with the output values.
 
 Example:
