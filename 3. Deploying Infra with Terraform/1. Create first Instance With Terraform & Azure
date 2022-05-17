@@ -1,2 +1,251 @@
 1.Create first Instance using Terraform & Azure:
 ===================================================
+1. Deploying Infrastructure with Terraform:
+=============================================
+1.Create an Azure Virtual Machine with Terraform.
+------------------------------------------------------
+Note: Use Terraform Registry.
+------
+1. The Plan
+2. Create our terraform file
+3. Create the AzureRM provider in terraform
+4. Define the Azure resource group
+5. Define a virtual network and subnet
+6. Define a new public IP address
+7. Define a Network Interface for our VM
+8. Define the Virtual Machine
+9. Build the Virtual Machine
+10.The whole file in one
+11.Conclusion
+
+1. Create the Terraform File:
+-----------------------------
+
+Let’s create our terraform file and name it main.tf.
+
+# touch  main.tf
+
+2. Create the AzureRM Provider in Terraform:
+---------------------------------------------
+Open up main.tf in your editor of choice and add the Azure provider to the top of the file.
+
+
+provider   "azurerm"   {
+   version   =   "= 2.0.0"
+   features   {}
+ }
+ 
+ 
+3. Define the Azure Resource Group:
+-----------------------------------
+Now let’s create our new resource group that everything will live inside.
+
+resource   "azurerm_resource_group"   "rg"   {
+   name   =   "my-first-terraform-rg"
+   location   =   "northeurope"
+ }
+ 
+ 
+4. Define a Virtual Network and Subnet:
+----------------------------------------
+
+resource   "azurerm_virtual_network"   "myvnet"   {
+   name   =   "my-vnet"
+   address_space   =   [ "10.0.0.0/16" ]
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+ }
+
+ resource   "azurerm_subnet"   "frontendsubnet"   {
+   name   =   "frontendSubnet"
+   resource_group_name   =    azurerm_resource_group.rg.name
+   virtual_network_name   =   azurerm_virtual_network.myvnet.name
+   address_prefix   =   "10.0.1.0/24"
+ }
+
+
+5. Define a New Public IP Address
+----------------------------------
+
+resource   "azurerm_public_ip"   "myvm1publicip"   {
+   name   =   "pip1"
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+   allocation_method   =   "Dynamic"
+   sku   =   "Basic"
+ }
+ 
+
+6. Define a Network Interface for our VM.
+------------------------------------------
+
+resource   "azurerm_network_interface"   "myvm1nic"   {
+   name   =   "myvm1-nic"
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+
+   ip_configuration   {
+     name   =   "ipconfig1"
+     subnet_id   =   azurerm_subnet.frontendsubnet.id
+     private_ip_address_allocation   =   "Dynamic"
+     public_ip_address_id   =   azurerm_public_ip.myvm 1 publicip.id
+   }
+ }
+ 
+ 
+ 7. Define the Virtual Machine
+--------------------------------
+
+resource   "azurerm_windows_virtual_machine"   "example"   {
+   name                    =   "myvm1"  
+   location                =   "northeurope"
+   resource_group_name     =   azurerm_resource_group.rg.name
+   network_interface_ids   =   [ azurerm_network_interface.myvm 1 nic.id ]
+   size                    =   "Standard_B1s"
+   admin_username          =   "adminuser"
+   admin_password          =   "Password123!"
+
+   source_image_reference   {
+     publisher   =   "MicrosoftWindowsServer"
+     offer       =   "WindowsServer"
+     sku         =   "2019-Datacenter"
+     version     =   "latest"
+   }
+
+   os_disk   {
+     caching             =   "ReadWrite"
+     storage_account_type   =   "Standard_LRS"
+   }
+ }
+ 
+
+8. Build the Virtual Machine.
+------------------------------
+- Login to Azure with the CLI
+- There are several ways to authenticate with Azure to run our terraform file, for this example, I’m going to suggest the Azure CLI.
+- Make sure you have the Azure CLI installed, then run:
+
+
+# az login
+
+- Which should bring up a browser window for you to login to your Azure subscription.
+
+9.Run terraform init
+----------------------
+Now we need to run terrafrom init to prepare the directory and pull down the resources that we have defined in our file.
+
+# terraform init
+
+10.Build Our Terraform File
+-------------------------
+
+# terraform apply
+
+
+9. The Whole File in One:
+----------------------------
+
+provider   "azurerm"   {
+   version   =   "= 2.0.0"
+   features   {}
+ }
+
+ resource   "azurerm_resource_group"   "rg"   {
+   name   =   "my-first-terraform-rg"
+   location   =   "northeurope"
+ }
+
+ resource   "azurerm_virtual_network"   "myvnet"   {
+   name   =   "my-vnet"
+   address_space   =   [ "10.0.0.0/16" ]
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+ }
+
+ resource   "azurerm_subnet"   "frontendsubnet"   {
+   name   =   "frontendSubnet"
+   resource_group_name   =    azurerm_resource_group.rg.name
+   virtual_network_name   =   azurerm_virtual_network.myvnet.name
+   address_prefix   =   "10.0.1.0/24"
+ }
+
+ resource   "azurerm_public_ip"   "myvm1publicip"   {
+   name   =   "pip1"
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+   allocation_method   =   "Dynamic"
+   sku   =   "Basic"
+ }
+
+ resource   "azurerm_network_interface"   "myvm1nic"   {
+   name   =   "myvm1-nic"
+   location   =   "northeurope"
+   resource_group_name   =   azurerm_resource_group.rg.name
+
+   ip_configuration   {
+     name   =   "ipconfig1"
+     subnet_id   =   azurerm_subnet.frontendsubnet.id
+     private_ip_address_allocation   =   "Dynamic"
+     public_ip_address_id   =   azurerm_public_ip.myvm 1 publicip.id
+   }
+ }
+
+ resource   "azurerm_windows_virtual_machine"   "example"   {
+   name                    =   "myvm1"  
+   location                =   "northeurope"
+   resource_group_name     =   azurerm_resource_group.rg.name
+   network_interface_ids   =   [ azurerm_network_interface.myvm 1 nic.id ]
+   size                    =   "Standard_B1s"
+   admin_username          =   "adminuser"
+   admin_password          =   "Password123!"
+
+   source_image_reference   {
+     publisher   =   "MicrosoftWindowsServer"
+     offer       =   "WindowsServer"
+     sku         =   "2019-Datacenter"
+     version     =   "latest"
+   }
+
+   os_disk   {
+     caching             =   "ReadWrite"
+     storage_account_type   =   "Standard_LRS"
+   }
+ }
+ 
+10. Conclusion:
+------------------
+So there we have it, a new Virtual Machine built in Azure using terraform. I personally really like the formatting and syntax compared to ARM templates.
+ Of course, I think terraform plan is where the magic is, which ARM template CURRENTLY has no answer for. I’m sure it will come soon enough to ARM,
+ but in the mean time. Terraform really is a great solution for IaC (Infrastructure as Code).
+
+This article was originally posted at https://owendavies.net/articles/create-azure-virtual-machine-with-terraform
+
+=========================================================================================================================================================================================
+2.Creating Instance with Terraform & AWS:
+-----------------------------------------
+
+Important Note
+Note that every region has a different AMI ID. The AMI ID's keeps on changing so make sure you use the latest AMI ID from the AWS console similar to the way it is shown in the video.
+
+Documentation Referred:
+https://registry.terraform.io/
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+first_ec2.tf
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "PUT-YOUR-ACCESS-KEY-HERE"
+  secret_key = "PUT-YOUR-SECRET-KEY-HERE"
+}
+
+resource "aws_instance" "myec2" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+}
+
+Commands:
+----------
+terraform init
+terraform plan
+terraform apply
