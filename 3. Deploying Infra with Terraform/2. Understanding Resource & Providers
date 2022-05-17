@@ -1,0 +1,69 @@
+1. Understanding Resource & Providers:
+=======================================
+Providers & Resources:
+-----------------------
+1.Providers:
+------------
+- A provider is a Terraform plugin that allows users to manage an external API. Provider plugins like the AWS provider or the cloud-init provider 
+  act as a translation layer that allows Terraform to communicate with many different cloud providers, databases, and services.
+
+- Terraform supports multiple providers.
+- Depending on what type of infrastructure we want to launch, we have to use appropriate providers accordingly.
+
+ Path: /project/.terraform/providers/registry.terraform.io/hashicrop  
+
+ Examples: AWS, AZURE, GOOGLE CLOUD, KUBERNETES, ORACLE CLOUD, ALIBABA CLOUD.
+-----------  GITHUB etc
+
+Search Providers:  Goto Terraform Registry and find a suitable provider 
+------------------
+Hashicrop Maintained syntax.
+------------------------------------
+provider "azurerm" {
+  # Configuration options
+}
+
+Non-HashiCrop Maintained:
+-------------------------
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "3.5.0"
+    }
+  }
+}
+
+Note:
+-----
+- From 0.13 onwards, Terraform requires explicit source information for any providers that are not 
+  Hashicrop Maintained, using a new syntax in the required_providers nested block inside the terraform config block.
+
+
+
+
+2.Initialization Phase:
+-------------------------
+- Upon adding a provider, it is important to run terraform init which in-turn will download plugins associated with the provider.
+
+# terraform init 
+
+
+3. Resources:
+--------------
+- Resources are the reference to the individual service which the provider has to offer.
+- Resources are the most important element in the terraform language. each resource block describes
+  one or more infra objects such as  virtual networks, compute instances, dns records.
+
+
+ Example:
+----------
+- resource aws_instance
+- resource aws_alb
+- resource iam_user
+- resource digitalocean_droplet
+
+# terraform --version
+# terraform init
+# terraform plan
+# terraform apply  
