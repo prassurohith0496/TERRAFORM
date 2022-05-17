@@ -1,1 +1,98 @@
+1.Attributes:
+==============
+- Terraform has capability to o/p the attribute of a resource with the output values.
 
+Example:
+--------
+ec2_public_ip = 35.161.21.197
+bucket_identifier=terraform-test-kplabs.s3.amazonaws.com
+
+Note:
+------
+- An outputed attributes can not only be used for the user reference but it can also act as a input to other 
+  resources being created via terraform.
+- Ex: After EIP gets created, its IP address should automatically get whitelisted in the security group.
+
+Example-1:
+----------
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "PUT-YOUR-ACCESS-KEY-HERE"
+  secret_key = "PUT-YOUR-SECRET-KEY-HERE"
+}
+
+resource "aws_eip" "lb" {
+  vpc      = true
+}
+
+output "eip" {
+  value = aws_eip.lb
+}
+
+resource "aws_s3_bucket" "mys3" {
+  bucket = "kplabs-attribute-demo-001"
+}
+
+output "mys3bucket" {
+  value = aws_s3_bucket.mys3
+}
+
+
+
+
+2. Cross Account Resource Attributes:
+=====================================
+- An outputed attributes can not only be used for the user reference but it can also act as a input to poother 
+  resources being created via terraform.
+
+Example:
+--------
+- After EIP gets created, its IP address should automatically get whitelisted in the security group.
+
+------>> 34.20.50.19 ------->>Firewall.
+
+Example:1
+-----------
+- EIP and EC2 Instance. 
+Example: 2
+------------
+- EIP and Security Group.
+-----------------------------------------------
+
+Example:
+---------
+
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "PUT-YOUR-ACCESS-KEY-HERE"
+  secret_key = "PUT-YOUR-SECRET-KEY-HERE"
+}
+
+
+resource "aws_instance" "myec2" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+}
+
+resource "aws_eip" "lb" {
+  vpc      = true
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.myec2.id
+  allocation_id = aws_eip.lb.id
+}
+
+
+resource "aws_security_group" "allow_tls" {
+  name        = "kplabs-security-group"
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["${aws_eip.lb.public_ip}/32"]
+
+#    cidr_blocks = [aws_eip.lb.public_ip/32]
+  }
+} 
