@@ -1,0 +1,99 @@
+1.Overview of Count Parameter:
+=============================
+1.With out using Count:
+------------------------
+- The count parameter on resource can simplify configuration and let you scale resources
+  by simply incrementing a number.
+
+- Lets assume, you need to create two EC2 instances. One of the common approach is to define
+  two seperate resource blocks for aws_instance.
+
+Example: create 2 EC2 Instances.
+---------
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "YOUR-ACCESS-KEY"
+  secret_key = "YOUR-SECRET-KEY"
+}
+
+resource "aws_instance" "dev" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+}
+
+
+resource "aws_instance" "dev" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+}
+
+
+
+2.Using Count:
+-----------------
+- With count parameter, we can simply specify the count value and the resource can be scaled accordingly.
+
+Example: create 5 instances using count. 
+---------
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "YOUR-ACCESS-KEY"
+  secret_key = "YOUR-SECRET-KEY"
+}
+
+resource "aws_instance" "dev" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+   count = 5
+}
+
+
+2. Count Index:
+=================
+- In resource blocks where count is set, an additional count object is available in expressions
+  so you can modify the configuration of each instance.
+
+- This object has one attribute.
+- count.index - The distinct index number ( starting with 0 ) corresponding to this instance.
+
+Challenges with count:
+-----------------------
+
+- With the below code, terraform will create 5 IAM users. But the problem is that all will have the 
+  same name.
+
+example:
+-----------
+resource "aws_iam_user" "lb" {
+  name = "loadbalancer"
+  count = 5
+  path = "/system/"
+}
+
+- count.index allows us to fetch the index of each iteration in the loop.
+
+resource "aws_iam_user" "lb" {
+  name = "loadbalancer.${count.index}"
+  count = 5
+  path = "/system/"
+}
+
+Challenges with default count index:
+---------------------------------------
+- Having a username like loadbalancer.1, loadbalancer.2, loadbalancer.3 mightnot be  suitable always
+- better names like dev-loadbalancer, stage-loadbalancer prod-loadbalancer is better.
+- count,index can help in such scenario as well.
+
+Example:
+----------
+variable "elb_names" {
+    type  = list
+    default = [ "dev-loadbalancer", "stage-load-balancer", "prod-loadbalancer" ]
+}
+
+
+resource "aws_iam_user" "lb" {
+  name = "var.elb_names${count.index}"
+  count = 5
+  path = "/system/"
+}   
