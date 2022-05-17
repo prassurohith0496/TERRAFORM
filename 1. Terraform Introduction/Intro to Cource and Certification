@@ -1,0 +1,108 @@
+ Lesson 1
+=========
+
+1.1.Introduction to the Course and Certification.
+-----------------------------------------------
+
+- HashiCrop Certified: Terraform Associate
+- Instructor : Zelo Vera
+
+Check: Azure Hardening Guidelines. Check CIS-BenchMark
+
+1.2.Overview of the Course.
+--------------------------
+- This is a certification specific course with primary intention to cover all the topics of the HashiCorp Certified Terraform Associate certification.
+- The arrangement of topics within the course is a little diffrent from the exam blueprint to make sure the course remains beginner-friendly
+
+Terraform Version: 0.12 and higher
+
+Certification link: https://hashicrop.com/certification/terraform-associate/
+
+1.3.What does this course tell:
+------------------------------
+1.Introduction to the Course
+2.Getting started and setting up Labs
+3.Deploying infrastructure with Terraform
+4.Read, Generate, Modify Configurations.
+5.Terraform Providers
+6.Terraform Modules & Workspaces.
+7.Remote State Management.
+8.Security Primer
+9.Terraform Enterprise Capabilities.
+10.Exam Preparation Section.
+
+
+1.4.Document - Code Repository:
+-------------------------------
+Link to the GitHub Repository:
+
+https://github.com/zealvora/terraform-beginner-to-advanced-resource
+
+========================================================================================================================================================================================
+
+LESSON-2: GETTING STARTED AND SETTING UP LABS:
+=================================================
+- There are various types of tools that can allow you to deploy infrastructure as code:
+- Terraform
+- CloudFormation
+- Heat
+- Ansible
+- SaltStack
+- Chef,Puppet and others.
+
+2.1 Configuration Management  Vs Infrastructure Orchestration:
+-----------------------------------------------------------
+- Ansible, Chef, Puppet are configuration management tools which means that they are primarily desighned to install and manage software on existing servers.
+- Terraform, CloudFormation are the infrastructure orchestration tools which means they can provision the servers and infra by themselves
+- Configuration Management tools can do some degree of infra provision, but the focus here is that some tools are going to be better fit for certain type of tasks.
+
+- IAC & Config Management = Friends
+
+----->>First_server.tf-------->>Terraform------>>Create New EC2 Instance---------->>EC2 Running Message to Terraform from <<----------AWS.
+
+- Now Terraform Integrates with Config Management tools like Ansible.
+
+
+----->>First_server.tf(1)-------->>Terraform (2)------>>Create New EC2 Instance(3)---------->>EC2 Running Message to Terraform from <<----------AWS.(4)
+
+- once ec2 instance created by terraform. it will call ansible for install & Configure Application
+
+(2)Terraform ----------->>ANSIBLE(5)---------->>Install & Configure Application (6)---------->>ON EC2 Instance----------------->>Sends Success message to Terraform
+
+ 
+Terraform:
+-----------
+- supports multiple platforms has hundreds of providers.
+- simple config language and faster learning curve.
+- easy integration with config manage tools like ansible.
+- easily extensible with help of plugins.
+- Terraform is Free.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2.2. Terraform Installation on LINUX:
+----------------------------------------
+- Tearraform installation is very Simple single binary file download and useit
+
+1.Download the Terraform Binary File.
+2. Move it to the right path.
+ # Unzip terraform binary file
+ # change dir to terraform
+ # ./terraform   ---------------check its working or not  
+ # echo $PATH  >> /usr/bin/local
+ # mv terraform /usr/bin/local
+ # cd /tmp
+ # terraform
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2.3. Choose Right IDE for Terraform IAC Development.
+-----------------------------------------------------
+- ATOM
+please use atom check in google
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2.4 Setting up Clouds Accounts like AWS, AZUE, GOOGLE CLOUD, VMWARE etc.
+------------------------------------------------------------------------
+
+======================================================================================================================================================================================= 
