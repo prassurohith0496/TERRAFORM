@@ -1,0 +1,28 @@
+1. Destroying Infra with Terraform:
+====================================
+- Destroying resources is important -not in production
+- if you keep the infra running, you will get charged fpor it.
+- Hence it is important for us to also know on how we can delete the infrastructure resources created via terraform.
+
+# " terraform destroy " allows us to destroy all the resources that are created within folder.
+
+Target Option for destroy:
+----------------------------
+- terraform destroy with -target flag allows us to destroy specific resources.
+
+example: # trraform destroy -target aws_instance.myec2
+
+- The target option can be used to focus terraform attention on only a subnet of resources
+  
+Combination of: Resource type + Local Resource Name
+
+Example:
+---------
+
+resource "aws_instance" "myec2" {
+ ami = "ami_id_XXXXXXXX"
+ instance_type = "t2.micro"
+}
+
+Note:  please comment terraform files if not needed otherwise "terraform  plan command "will  will recreate resources.
+----- 
