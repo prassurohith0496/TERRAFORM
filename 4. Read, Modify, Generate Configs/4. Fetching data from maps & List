@@ -1,0 +1,30 @@
+1. Fetching Data from Maps and List:
+=====================================
+- we can fetch data from maps and list of variables.
+
+Example:
+---------
+
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "PUT-YOUR-ACCESS-KEY-HERE"
+  secret_key = "PUT-YOUR-SECRET-KEY-HERE"
+}
+
+resource "aws_instance" "myec2" {
+   ami = "ami-079784643565"
+   instance_type = "t2.micro"
+}
+
+variable "list" {
+ type = list
+ default = [ "m5.large","m5.xlarge","t2.medium" ]
+}
+
+variable "types" {
+  type = map
+  default = {
+    us-east-1 = "t2.micro"
+    us-west-2 = "t2.nano"
+    us-south-1= "t2.small"
+  }
