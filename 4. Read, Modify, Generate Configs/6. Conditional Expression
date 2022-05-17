@@ -1,0 +1,49 @@
+1. Conditional Expression:
+===========================
+- A conditional expression uses the value of a bool expression to select one of two values.
+- Syntax conditional expression:
+
+condition ? true_val : false_val
+
+- if condition is true then the result is true_val. If condition is false then the result is false_val.
+
+Example:
+---------
+- lets Assume that there are two resource blocks as part of terraform configuration.
+- Depending on the variable value, one of the resource blocks will run.
+
+-->>IS-TEST-------->>DEV(1)---->>Prod(2)
+    Variable          true       false
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+conditional.tf
+-----------------
+
+provider "aws" {
+  region     = "us-west-2"
+  access_key = "YOUR-ACCESS-KEY"
+  secret_key = "YOUR-SECRET-KEY"
+}
+
+variable "istest" {}
+
+resource "aws_instance" "dev" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.micro"
+   count = var.istest == true ? 3 : 0
+}
+
+resource "aws_instance" "prod" {
+   ami = "ami-082b5a644766e0e6f"
+   instance_type = "t2.large"
+   count = var.istest == false ? 1 : 0
+}
+
+terraform.tfvars
+--------------------
+istest = false
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------     
